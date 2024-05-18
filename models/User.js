@@ -8,7 +8,7 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: false
     },
     name: {
         type: String,
@@ -26,9 +26,9 @@ const userSchema = new Schema({
             type: Schema.Types.ObjectId
         }
     ],
-    isPsychologist: {
-        type: Boolean,
-        default: false
+    role:{
+        type: String,
+        default: 'user'
     }
 });
 

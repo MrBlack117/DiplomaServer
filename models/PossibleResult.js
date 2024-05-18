@@ -19,6 +19,14 @@ const possibleResultSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
+    minScore: {
+        type: Number,
+        default: 0
+    },
+    maxScore: {
+        type: Number,
+        default: 0
+    },
     scores: [{
         answerOptionId: {
             ref: 'answerOptions',

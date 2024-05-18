@@ -16,8 +16,8 @@ const commentRoutes = require('./routes/comment')
 const app = express()
 
 
-
-mongoose.connect('mongodb+srv://boichukmykhailo:mI5Tf48IfFM3XpzJ@cluster0.lpwehne.mongodb.net/?retryWrites=true&w=majority')
+const db = process.env.DATABASE_URI;
+mongoose.connect(db)
     .then(() => console.log('MongoDB connected.'))
     .catch(error => console.log(error));
 
@@ -38,6 +38,5 @@ app.use('/api/answerOption', answerOptionRoutes)
 app.use('/api/userTestResult', userTestResultRoutes)
 app.use('/api/comment', commentRoutes)
 
-console.log(process.env.SERVER_URL)
 
 module.exports = app

@@ -6,6 +6,10 @@ const questionSchema = new Schema({
         type: String,
         required: true
     },
+    imageSrc: {
+        type: String,
+        default: ''
+    },
     testId: {
         ref: 'tests',
         type: Schema.Types.ObjectId,

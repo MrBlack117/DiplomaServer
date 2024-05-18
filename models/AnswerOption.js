@@ -14,11 +14,15 @@ const answerOptionSchema = new Schema({
     possibleResultId: {
         ref: 'possibleResults',
         type: Schema.Types.ObjectId,
-        required: true
+        default: ''
     },
     score: {
         type: Number,
-        required: true
+        default: 0
+    },
+    imageSrc: {
+        type: String,
+        default: ''
     }
 });
 

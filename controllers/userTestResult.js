@@ -38,6 +38,7 @@ module.exports.create = function (req, res) {
     const userTestResult = new UserTestResult({
         test: req.body.test,
         user: req.user.id,
+        score: req.body.score,
         results: req.body.results,
         answers: req.body.answers
     });
@@ -45,7 +46,7 @@ module.exports.create = function (req, res) {
             res.status(201).json(result);
             return Test.findByIdAndUpdate(req.body.test, {$push: {usersResults: result._id}})
         }
-    ).then(result => {
+    ).then(() => {
         console.log('Result created');
     }).catch(err => {
         errorHandler(res, err);

@@ -2,7 +2,6 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const errorHandler = require('../utils/errorHandler');
-const {models} = require("mongoose");
 const key = 'super_secret_key'
 
 
@@ -50,10 +49,19 @@ module.exports.register = async function (req, res) {
             password: bcrypt.hashSync(password, salt),
             name: req.body.signUpName
         });
+        const token = jwt.sign({
+            _id: user._id,
+            name: user.name
+        }, key, {expiresIn: '8h'});
         user.save().then(result => {
             res.status(201).json({
-                message: 'Registration successful!',
-                user: result
+                result: result,
+                message: 'Login successful!',
+                token: 'Bearer ' + token,
+                userData: {
+                    name: user.name,
+                    email: user.email
+                }
             });
         }).catch(err => {
             errorHandler(res, err);
@@ -63,6 +71,8 @@ module.exports.register = async function (req, res) {
 }
 
 module.exports.getUser = async function (req, res) {
+
+
     try {
         const user = await User.findById(req.params.userId)
         res.status(200).json(user)
@@ -70,12 +80,56 @@ module.exports.getUser = async function (req, res) {
         errorHandler(res, e);
     }
 
+
 }
-/**
- Асинхронне порівняння пароля: Використовується bcrypt.compare замість bcrypt.compareSync.
- Надійний секретний ключ: Замість жорстко закодованого ключа використовується process.env.JWT_SECRET_KEY.
- Час дії токена: Встановлено expiresIn: '1h' для JWT.
- Валидація та санітизація вхідних даних: Використовується user.validate перед збереженням.
- Детальні повідомлення про помилки: Додано більш інформативні повідомлення про помилки.
- Обробка помилок: Покращено обробку помилок за допомогою errorHandler.
- */
+
+module.exports.getUserByEmail = async function (req, res) {
+    try {
+        const user = await User.findOne({email: req.params.email});
+        res.status(200).json(user);
+    } catch (e) {
+        errorHandler(res, e)
+    }
+}
+
+
+module.exports.googleAuth = async function (req, res) {
+    const candidate = await User.findOne({email: req.body.email});
+    if (candidate) {
+        const token = jwt.sign({
+            _id: candidate._id,
+            name: candidate.name
+        }, key, {expiresIn: '8h'});
+        res.status(200).json({
+            message: 'Login successful!',
+            token: 'Bearer ' + token,
+            userData: {
+                name: candidate.name,
+                email: candidate.email
+            }
+        });
+    } else {
+        const user = new User({
+            email: req.body.email,
+            name: req.body.name
+        });
+        const token = jwt.sign({
+            _id: user._id,
+            name: user.name
+        }, key, {expiresIn: '8h'});
+        user.save().then(result => {
+            res.status(201).json({
+                result: result,
+                message: 'Login successful!',
+                token: 'Bearer ' + token,
+                userData: {
+                    name: user.name,
+                    email: user.email
+                }
+            });
+        }).catch(err => {
+            errorHandler(res, err);
+        });
+    }
+
+}

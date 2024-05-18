@@ -11,6 +11,10 @@ const testSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
+    processingType: {
+        type: String,
+        required: true
+    },
     brief: {
         type: String,
         default: ''

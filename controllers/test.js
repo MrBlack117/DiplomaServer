@@ -6,7 +6,7 @@ const PossibleResult = require('../models/PossibleResult')
 const User = require('../models/User');
 const errorHandler = require('../utils/errorHandler');
 const UserTestResult = require("../models/UserTestResult");
-const fs = require('fs');
+const firebaseController = require('./firebaseStorage');
 
 module.exports.getById = async function (req, res) {
     try {
@@ -51,12 +51,22 @@ module.exports.getAll = async function (req, res) {
 }
 
 module.exports.create = async function (req, res) {
+    let imageUrl = '';
+    try {
+        if (req.file) {
+            imageUrl = await firebaseController.uploadFile(req.file.buffer, req.file.originalname );
+        }
+    } catch (err) {
+        errorHandler(res, err);
+    }
+
     const test = new Test({
         name: req.body.name,
         brief: req.body.brief,
         description: req.body.description,
         user: req.user.id,
-        imageSrc: req.file ? req.file.path : ''
+        processingType: req.body.processingType,
+        imageSrc: imageUrl
     });
     test.save().then(test => {
         res.status(201).json(test);
@@ -70,7 +80,7 @@ module.exports.delete = async function (req, res) {
         const test = await Test.findByIdAndDelete({_id: req.params.id});
 
         if (test.imageSrc) {
-            fs.unlinkSync(test.imageSrc); // Удаление изображения с диска
+            await firebaseController.deleteFileByUrl(test.imageSrc);
         }
 
         for (const questionId of test.questions) {
@@ -85,7 +95,9 @@ module.exports.delete = async function (req, res) {
         }
         for (const possibleResultId of test.possibleResults) {
             const possibleResult = await PossibleResult.findByIdAndDelete({_id: possibleResultId})
-            fs.unlinkSync(possibleResult.imageSrc);
+            if(possibleResult.imageSrc){
+                await firebaseController.deleteFileByUrl(possibleResult.imageSrc)
+            }
         }
 
         for (const userResultId of test.usersResults) {
@@ -104,11 +116,20 @@ module.exports.update = async function (req, res) {
     const updated = {
         name: req.body.name,
         brief: req.body.brief,
-        description: req.body.description
+        description: req.body.description,
+        processingType: req.body.processingType
     }
 
     if (req.file) {
-        updated.imageSrc = req.file.path;
+        const oldTest = await Test.findById(req.params.id);
+        if (oldTest.imageSrc) {
+            try {
+                await firebaseController.deleteFileByUrl(oldTest.imageSrc);
+            } catch (err) {
+                errorHandler(res, err);
+            }
+        }
+        updated.imageSrc = await firebaseController.uploadFile(req.file.buffer, req.file.originalname);
     }
 
     try {

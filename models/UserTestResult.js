@@ -16,6 +16,10 @@ const userTestResultSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    score: {
+        type: Number,
+        default: 0
+    },
     results: [
         {
             possible_result_id: {

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../DiplomaServer.iml" filepath="$PROJECT_DIR$/../DiplomaServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Diploma.iml" filepath="$PROJECT_DIR$/Diploma.iml" />
     </modules>
   </component>
 </project>
