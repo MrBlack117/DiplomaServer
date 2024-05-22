@@ -2,7 +2,9 @@ const AnswerOption = require('../models/AnswerOption')
 const Question = require('../models/Question')
 const errorHandler = require('../utils/errorHandler');
 const firebaseController = require('./firebaseStorage');
-require("../models/Test");
+const Test = require("../models/Test");
+
+
 module.exports.getByQuestionId = async function (req, res) {
     try {
         const answerOptions = await AnswerOption.find({
