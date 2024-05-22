@@ -1,12 +1,11 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('../firebaseAdmin.json');
 const {getDownloadURL} = require('firebase-admin/storage');
-const bucket = process.env.FIREBASE_BUCKET;
 
 // Инициализация Firebase Admin SDK
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    storageBucket: bucket
+    storageBucket: 'gs://diplomadatabase-84cd2.appspot.com'
 });
 
 const storageBucket = admin.storage().bucket();
@@ -15,7 +14,11 @@ const storage = admin.storage();
 // Функция для загрузки файла в Firebase Storage
 exports.uploadFile = async (fileData, fileName) => {
     try {
-        const file = storageBucket.file(fileName);
+
+        const timestamp = Date.now();
+        const uniqueFileName = `${fileName}-${timestamp}`;
+
+        const file = storageBucket.file(uniqueFileName);
 
         // Загрузка файла в Firebase Storage
         await file.save(fileData);
@@ -33,6 +36,7 @@ exports.uploadFile = async (fileData, fileName) => {
 // Функция для удаления файла из Firebase Storage
 exports.deleteFile = async (fileName) => {
     try {
+        const name = storage.getReference
         const file = storageBucket.file(fileName);
 
         // Удаление файла из Firebase Storage

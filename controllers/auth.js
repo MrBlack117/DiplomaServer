@@ -17,9 +17,10 @@ module.exports.login = async function (req, res) {
             res.status(200).json({
                 message: 'Login successful!',
                 token: 'Bearer ' + token,
+                _id: candidate._id,
                 userData: {
                     name: candidate.name,
-                    email: candidate.email
+                    email: candidate.email,
                 }
             });
         } else {
@@ -58,6 +59,7 @@ module.exports.register = async function (req, res) {
                 result: result,
                 message: 'Login successful!',
                 token: 'Bearer ' + token,
+                _id: result._id,
                 userData: {
                     name: user.name,
                     email: user.email
@@ -71,17 +73,30 @@ module.exports.register = async function (req, res) {
 }
 
 module.exports.getUser = async function (req, res) {
-
-
     try {
         const user = await User.findById(req.params.userId)
         res.status(200).json(user)
     } catch (e) {
         errorHandler(res, e);
     }
-
-
 }
+
+module.exports.updateUser = async function (req, res) {
+    const updated = {};
+
+    if (req.body.role) updated.role = req.body.role;
+
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.params.id },
+            { $set: updated },
+            { new: true }
+        );
+        res.status(200).json(user);
+    } catch (e) {
+        errorHandler(res, e);
+    }
+};
 
 module.exports.getUserByEmail = async function (req, res) {
     try {
@@ -91,7 +106,6 @@ module.exports.getUserByEmail = async function (req, res) {
         errorHandler(res, e)
     }
 }
-
 
 module.exports.googleAuth = async function (req, res) {
     const candidate = await User.findOne({email: req.body.email});
@@ -103,6 +117,7 @@ module.exports.googleAuth = async function (req, res) {
         res.status(200).json({
             message: 'Login successful!',
             token: 'Bearer ' + token,
+            _id: candidate._id,
             userData: {
                 name: candidate.name,
                 email: candidate.email

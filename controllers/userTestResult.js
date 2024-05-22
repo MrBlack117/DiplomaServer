@@ -46,7 +46,7 @@ module.exports.create = function (req, res) {
             res.status(201).json(result);
             return Test.findByIdAndUpdate(req.body.test, {$push: {usersResults: result._id}})
         }
-    ).then(() => {
+    ).then(result => {
         console.log('Result created');
     }).catch(err => {
         errorHandler(res, err);

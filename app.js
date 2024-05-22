@@ -16,8 +16,8 @@ const commentRoutes = require('./routes/comment')
 const app = express()
 
 
-const db = process.env.DATABASE_URI;
-mongoose.connect(db)
+
+mongoose.connect('mongodb+srv://boichukmykhailo:mI5Tf48IfFM3XpzJ@cluster0.lpwehne.mongodb.net/diplomaDB?retryWrites=true&w=majority')
     .then(() => console.log('MongoDB connected.'))
     .catch(error => console.log(error));
 

@@ -54,7 +54,7 @@ module.exports.create = async function (req, res) {
     let imageUrl = '';
     try {
         if (req.file) {
-            imageUrl = await firebaseController.uploadFile(req.file.buffer, req.file.originalname );
+            imageUrl = await firebaseController.uploadFile(req.file.buffer, req.file.originalname);
         }
     } catch (err) {
         errorHandler(res, err);
@@ -86,16 +86,24 @@ module.exports.delete = async function (req, res) {
         for (const questionId of test.questions) {
             const question = await Question.findOneAndDelete({_id: questionId});
 
+            if (question.imageSrc) {
+                await firebaseController.deleteFileByUrl(question.imageSrc);
+            }
+
             for (const answerOptionId of question.answerOptions) {
-                await AnswerOption.findByIdAndDelete({_id: answerOptionId})
+                const answerOption = await AnswerOption.findByIdAndDelete({_id: answerOptionId})
+                if (answerOption.imageSrc) {
+                    await firebaseController.deleteFileByUrl(answerOption.imageSrc);
+                }
             }
         }
+
         for (const commentId of test.comments) {
             await Comment.findByIdAndDelete({_id: commentId})
         }
         for (const possibleResultId of test.possibleResults) {
             const possibleResult = await PossibleResult.findByIdAndDelete({_id: possibleResultId})
-            if(possibleResult.imageSrc){
+            if (possibleResult.imageSrc) {
                 await firebaseController.deleteFileByUrl(possibleResult.imageSrc)
             }
         }

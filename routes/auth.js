@@ -7,5 +7,6 @@ router.post('/register', controller.register);
 router.post('/googleAuth', controller.googleAuth);
 router.get('/user/:userId', controller.getUser)
 router.get('/user/email/:email', controller.getUserByEmail)
+router.patch('/update/:id', controller.updateUser)
 
 module.exports = router
