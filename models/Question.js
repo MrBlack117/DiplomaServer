@@ -15,6 +15,10 @@ const questionSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
+    textAnswer: {
+        type: Boolean,
+        required: true
+    },
     answerOptions: [
         {
             ref: 'answerOptions',

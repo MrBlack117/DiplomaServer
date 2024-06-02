@@ -37,10 +37,11 @@ module.exports.getByUser = async function (req, res) {
 module.exports.create = function (req, res) {
     const userTestResult = new UserTestResult({
         test: req.body.test,
-        user: req.user.id,
+        user: req.user?.id,
         score: req.body.score,
         results: req.body.results,
-        answers: req.body.answers
+        answers: req.body.answers,
+        textAnswers: req.body.textAnswers
     });
     userTestResult.save().then(result => {
             res.status(201).json(result);

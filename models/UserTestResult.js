@@ -10,7 +10,6 @@ const userTestResultSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User', // Посилання на схему користувача
-        required: true
     },
     date: {
         type: Date,
@@ -32,10 +31,22 @@ const userTestResultSchema = new Schema({
             }
         }
     ],
-    answers:[
+    answers: [
         {
             type: Schema.Types.ObjectId,
             ref: 'AnswerOption'
+        }
+    ],
+    textAnswers: [
+        {
+            questionId: {
+                type: Schema.Types.ObjectId,
+                ref: 'Question'
+            },
+            text: {
+                type: String,
+                default: ''
+            }
         }
     ]
 });

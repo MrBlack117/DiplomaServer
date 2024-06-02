@@ -30,6 +30,7 @@ module.exports.create = async function (req, res) {
     const question = new Question({
         text: req.body.text,
         testId: req.body.testId,
+        textAnswer: req.body.textAnswer === 'true',
         imageSrc: imageUrl
     });
 
@@ -74,6 +75,7 @@ module.exports.update = async function (req, res) {
     const updated = {
         text: req.body.text,
         testId: req.body.testId,
+        textAnswer: req.body.textAnswer === 'true'
     }
 
     if (req.file) {
