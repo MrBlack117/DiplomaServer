@@ -6,7 +6,7 @@ const key = 'super_secret_key'
 
 
 module.exports.login = async function (req, res) {
-    const candidate = await User.findOne({email: req.body.signInEmail});
+    const candidate = await User.findOne({email: req.body.signInEmail.toString()});
     if (candidate) {
         const passwordResult = bcrypt.compareSync(req.body.signInPassword, candidate.password);
         if (passwordResult) {
@@ -37,7 +37,7 @@ module.exports.login = async function (req, res) {
 }
 
 module.exports.register = async function (req, res) {
-    const candidate = await User.findOne({email: req.body.signUpEmail});
+    const candidate = await User.findOne({email: req.body.signUpEmail.toString()});
     if (candidate) {
         res.status(409).json({
             message: 'User already exists!'
@@ -108,7 +108,7 @@ module.exports.getUserByEmail = async function (req, res) {
 }
 
 module.exports.googleAuth = async function (req, res) {
-    const candidate = await User.findOne({email: req.body.email});
+    const candidate = await User.findOne({email: req.body.email.toString()});
     if (candidate) {
         const token = jwt.sign({
             _id: candidate._id,
