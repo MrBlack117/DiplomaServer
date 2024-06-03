@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const errorHandler = require('../utils/errorHandler');
-const key = 'super_secret_key'
+const key = process.env.JWT_KEY
 
 
 module.exports.login = async function (req, res) {
